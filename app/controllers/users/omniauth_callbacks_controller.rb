@@ -44,7 +44,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
        elsif user_signed_in?
          current_user.authentications.create!(:provider => omniauth['provider'], :uid => omniauth['uid'])
-         flash[:success] = "Successfully linked account.  You can now use this account to log into Gameface."
+         flash[:success] = "Successfully linked account.  You can now use this account to log in."
          redirect_to authentications_url and return
 
        else
@@ -59,7 +59,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
          user.email = params[:email]
        end
        if user.save
-         flash[:success] = "Welcome to Gameface!  We're excited to have you!"
+         flash[:success] = "Welcome to PasswordPusher!"
          sign_in_and_redirect(:user, user) and return
        else
          session[:omniauth] = omniauth.except('extra')
