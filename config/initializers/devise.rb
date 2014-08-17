@@ -1,15 +1,19 @@
-require 'openid/store/filesystem'
-
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
+  # The secret key used by Devise. Devise uses this key to generate
+  # random tokens. Changing this key will render invalid all existing
+  # confirmation, reset password and unlock tokens in the database.
+  config.secret_key = 'cc8427c578b32d8433exedf0947310d9ccdefa0cc7830f4b598bf77023aafbd913fa685cc3d5e52a367af0cab9f18bf6ef46ab97e8551df457c070e56369234b'
+
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
-  # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = "pglombardo@gmail.com"
+  # note that it will be overwritten if you use your own mailer class
+  # with default "from" parameter.
+  config.mailer_sender = 'pglombardo@gmail.com'
 
   # Configure the class responsible to send e-mails.
-  # config.mailer = "Devise::Mailer"
+  # config.mailer = 'Devise::Mailer'
 
   # ==> ORM configuration
   # Load and configure the ORM. Supports :active_record (default) and
@@ -45,21 +49,41 @@ Devise.setup do |config|
   config.strip_whitespace_keys = [ :email ]
 
   # Tell if authentication through request.params is enabled. True by default.
+  # It can be set to an array that will enable params authentication only for the
+  # given strategies, for example, `config.params_authenticatable = [:database]` will
+  # enable it only for database (email + password) authentication.
   # config.params_authenticatable = true
 
-  # Tell if authentication through HTTP Basic Auth is enabled. False by default.
+  # Tell if authentication through HTTP Auth is enabled. False by default.
+  # It can be set to an array that will enable http authentication only for the
+  # given strategies, for example, `config.http_authenticatable = [:database]` will
+  # enable it only for database authentication. The supported strategies are:
+  # :database      = Support basic authentication with authentication key + password
   # config.http_authenticatable = false
 
   # If http headers should be returned for AJAX requests. True by default.
   # config.http_authenticatable_on_xhr = true
 
-  # The realm used in Http Basic Authentication. "Application" by default.
-  # config.http_authentication_realm = "Application"
+  # The realm used in Http Basic Authentication. 'Application' by default.
+  # config.http_authentication_realm = 'Application'
 
   # It will change confirmation, password recovery and other workflows
   # to behave the same regardless if the e-mail provided was right or wrong.
   # Does not affect registerable.
   # config.paranoid = true
+
+  # By default Devise will store the user in session. You can skip storage for
+  # particular strategies by setting this option.
+  # Notice that if you are skipping storage for all authentication paths, you
+  # may want to disable generating routes to Devise's sessions controller by
+  # passing skip: :sessions to `devise_for` in your config/routes.rb
+  config.skip_session_storage = [:http_auth]
+
+  # By default, Devise cleans up the CSRF token on authentication to
+  # avoid CSRF token fixation attacks. This means that, when using AJAX
+  # requests for sign in and sign up, you need to get a new CSRF token
+  # from the server. You can disable this option at your own risk.
+  # config.clean_up_csrf_token_on_authentication = true
 
   # ==> Configuration for :database_authenticatable
   # For bcrypt, this is the cost for hashing the password and defaults to 10. If
@@ -67,45 +91,59 @@ Devise.setup do |config|
   #
   # Limiting the stretches to just one in testing will increase the performance of
   # your test suite dramatically. However, it is STRONGLY RECOMMENDED to not use
-  # a value less than 10 in other environments.
+  # a value less than 10 in other environments. Note that, for bcrypt (the default
+  # encryptor), the cost increases exponentially with the number of stretches (e.g.
+  # a value of 20 is already extremely slow: approx. 60 seconds for 1 calculation).
   config.stretches = Rails.env.test? ? 1 : 10
 
   # Setup a pepper to generate the encrypted password.
-  config.pepper = "002b214411a27e1i25b6f87f2bc6edabc5673fbe442c55ea6d9135b6fc3e9ae17d0cbc1d113611881463e6620d5bbd38ecb36a38ed1b91116b35285a1f5f87ec"
-
-  config.secret_key = 'c05b8b2b23cbf65cc018c51c1afc1a01f038a1114eef577e81457a60c8ad5f83c5adc2627b21c7bd0262589b8beb1758d53a6b9bfbd334f5280b5a89d143780b'
+  config.pepper = '7faa30x9c2c0545e05e0d2e78e12db1fe3d85cea39ae1725d2ccf9ea9ebfed54ae2199e0393883e70a38593f0ae3fd87eb6dc82f7784457e107235f17b8913ac'
 
   # ==> Configuration for :confirmable
   # A period that the user is allowed to access the website even without
-  # confirming his account. For instance, if set to 2.days, the user will be
-  # able to access the website for two days without confirming his account,
+  # confirming their account. For instance, if set to 2.days, the user will be
+  # able to access the website for two days without confirming their account,
   # access will be blocked just in the third day. Default is 0.days, meaning
-  # the user cannot access the website without confirming his account.
-  # config.confirm_within = 2.days
+  # the user cannot access the website without confirming their account.
+  # config.allow_unconfirmed_access_for = 2.days
+
+  # A period that the user is allowed to confirm their account before their
+  # token becomes invalid. For example, if set to 3.days, the user can confirm
+  # their account within 3 days after the mail was sent, but on the fourth day
+  # their account can't be confirmed with the token any more.
+  # Default is nil, meaning there is no restriction on how long a user can take
+  # before confirming their account.
+  # config.confirm_within = 3.days
+
+  # If true, requires any email changes to be confirmed (exactly the same way as
+  # initial account confirmation) to be applied. Requires additional unconfirmed_email
+  # db field (see migrations). Until confirmed, new email is stored in
+  # unconfirmed_email column, and copied to email column on successful confirmation.
+  config.reconfirmable = true
 
   # Defines which key will be used when confirming an account
   # config.confirmation_keys = [ :email ]
 
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
-  config.remember_for = 2.weeks
+  config.remember_for = 1.week
 
-  # If true, a valid remember token can be re-used between multiple browsers.
-  # config.remember_across_browsers = true
+  # Invalidates all the remember me tokens when the user signs out.
+  config.expire_all_remember_me_on_sign_out = true
 
   # If true, extends the user's remember period when remembered via cookie.
   # config.extend_remember_period = false
 
   # Options to be passed to the created cookie. For instance, you can set
-  # :secure => true in order to force SSL only cookies.
-  # config.cookie_options = {}
+  # secure: true in order to force SSL only cookies.
+  # config.rememberable_options = {}
 
   # ==> Configuration for :validatable
-  # Range for password length. Default is 6..128.
-  # config.password_length = 6..128
+  # Range for password length.
+  config.password_length = 8..128
 
   # Email regex used to validate email formats. It simply asserts that
-  # an one (and only one) @ exists in the given string. This is mainly
+  # one (and only one) @ exists in the given string. This is mainly
   # to give user feedback and not to assert the e-mail validity.
   # config.email_regexp = /\A[^@]+@[^@]+\z/
 
@@ -113,6 +151,9 @@ Devise.setup do |config|
   # The time you want to timeout the user session without activity. After this
   # time the user will be asked for credentials again. Default is 30 minutes.
   # config.timeout_in = 30.minutes
+
+  # If true, expires auth token on session timeout.
+  # config.expire_auth_token_on_timeout = false
 
   # ==> Configuration for :lockable
   # Defines which strategy will be used to lock an account.
@@ -132,10 +173,13 @@ Devise.setup do |config|
 
   # Number of authentication tries before locking an account if lock_strategy
   # is failed attempts.
-  config.maximum_attempts = 20
+  config.maximum_attempts = 15
 
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
   # config.unlock_in = 1.hour
+
+  # Warn on the last attempt before the account is locked.
+  config.last_attempt_warning = true
 
   # ==> Configuration for :recoverable
   #
@@ -152,16 +196,10 @@ Devise.setup do |config|
   # :sha1, :sha512 or encryptors from others authentication tools as :clearance_sha1,
   # :authlogic_sha512 (then you should set stretches above to 20 for default behavior)
   # and :restful_authentication_sha1 (then you should set stretches to 10, and copy
-  # REST_AUTH_SITE_KEY to pepper)
+  # REST_AUTH_SITE_KEY to pepper).
+  #
+  # Require the `devise-encryptable` gem when using anything other than bcrypt
   # config.encryptor = :sha512
-
-  # ==> Configuration for :token_authenticatable
-  # Defines name of the authentication token params key
-  # config.token_authentication_key = :auth_token
-
-  # If true, authentication through token does not store user in session and needs
-  # to be supplied on each request. Useful if you are using the token as API token.
-  # config.stateless_token = false
 
   # ==> Scopes configuration
   # Turn scoped views on. Before rendering "sessions/new", it will first check for
@@ -173,9 +211,8 @@ Devise.setup do |config|
   # devise role declared in your routes (usually :user).
   # config.default_scope = :user
 
-  # Configure sign_out behavior.
-  # Sign_out action can be scoped (i.e. /users/sign_out affects only :user scope).
-  # The default is true, which means any logout action will sign out all active scopes.
+  # Set this configuration to false if you want /users/sign_out to sign out
+  # only the current scope. By default, Devise signs out all scopes.
   # config.sign_out_all_scopes = true
 
   # ==> Navigation configuration
@@ -186,9 +223,8 @@ Devise.setup do |config|
   # If you have any extra navigational formats, like :iphone or :mobile, you
   # should add them to the navigational formats lists.
   #
-  # The :"*/*" and "*/*" formats below is required to match Internet
-  # Explorer requests.
-  # config.navigational_formats = [:"*/*", "*/*", :html]
+  # The "*/*" below is required to match Internet Explorer requests.
+  # config.navigational_formats = ['*/*', :html]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
@@ -196,16 +232,30 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
+  # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   config.omniauth :open_id, :store => OpenID::Store::Filesystem.new('/tmp'), :identifier => 'https://www.google.com/accounts/o8/id', :name => 'google', :require => 'omniauth-openid'
   config.omniauth :open_id, :store => OpenID::Store::Filesystem.new('/tmp'), :identifier => 'https://yahoo.com', :name => 'yahoo', :require => 'omniauth-openid'
-  
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.
   #
   # config.warden do |manager|
   #   manager.intercept_401 = false
-  #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
+  #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
+
+  # ==> Mountable engine configurations
+  # When using Devise inside an engine, let's call it `MyEngine`, and this engine
+  # is mountable, there are some extra configurations to be taken into account.
+  # The following options are available, assuming the engine is mounted as:
+  #
+  #     mount MyEngine, at: '/my_engine'
+  #
+  # The router that invoked `devise_for`, in the example above, would be:
+  # config.router_name = :my_engine
+  #
+  # When using omniauth, Devise cannot automatically set Omniauth path,
+  # so you need to do it manually. For the users scope, it would be:
+  # config.omniauth_path_prefix = '/my_engine/users/auth'
 end
