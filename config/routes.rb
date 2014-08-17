@@ -3,9 +3,6 @@ PasswordPusher::Application.routes.draw do
 
   resources :p, :controller => :passwords, :as => :passwords, :except => :index
   
-  # Password Creator route
-  # match '/p/:url_token/:admin_key' => 'passwords#details', :via => :get, :as => :password
-  
   root :to => 'passwords#new'
   
   match 'pages/about' => 'high_voltage/pages#show', :id => 'about'
