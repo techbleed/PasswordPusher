@@ -7,7 +7,7 @@ group :development, :test, :private do
   gem "sqlite3"
 end
 
-group :production, :engineyard do
+group :production do
   gem 'pg'
   gem 'oboe-heroku'
   gem 'oboe', '2.7.0'
@@ -21,12 +21,12 @@ group :development, :test do
   gem "byebug", :platforms => :ruby_20
   gem "nifty-generators"
   gem 'pry'
+  gem 'thin'
 end
 
 gem 'json'
 gem 'haml'
 gem 'haml-rails'
-gem 'fastercsv' # Only required on Ruby 1.8 and below
 gem 'rails_admin'
 gem 'therubyracer'
 gem 'ezcrypto', :git => 'git://github.com/pglombardo/ezcrypto.git'
@@ -44,8 +44,6 @@ end
 gem 'foreman'
 gem 'jquery-rails'
 gem 'delayed_job_active_record'
-gem 'thin'
-gem 'capistrano', '~>2.15'
 gem "devise"
 gem "omniauth"
 gem 'omniauth-openid'
