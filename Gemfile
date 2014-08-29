@@ -18,7 +18,7 @@ group :development, :test do
   gem 'silent-postgres'
   gem "ruby-debug19", :platforms => :ruby_19
   gem "ruby-debug", :platforms => :ruby_18
-  gem "byebug", :platforms => :ruby_20
+  gem "byebug", :platforms => [ :ruby_20, :ruby_21 ]
   gem "nifty-generators"
   gem 'pry'
   gem 'thin'
