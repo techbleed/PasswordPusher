@@ -2,6 +2,9 @@ PasswordPusher::Application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
   resources :p, :controller => :passwords, :as => :passwords, :except => :index
+  match 'passwords/:url_token/admin' => 'passwords#admin', :as => :pwadmin
+
+  match 'dashboard' => 'users#show', :as => :dashboard
   
   root :to => 'passwords#new'
   
