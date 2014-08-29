@@ -2,15 +2,15 @@
 %h1 Your Passwords
 %table.admin_table
   %tr
-    %th= sortable "Created"
-    %th= sortable "Expired?"
-    %th= sortable "Views"
-    %th= sortable "Remaining Days"
-    %th= sortable "url_token", "URL ID"
+    %th= sortable "created_at", "Created"
+    %th= sortable "expired", "Expired?"
+    %th= "Views"
+    %th= "Remaining Days"
+    %th= "URL ID"
     %th Actions
   - @passwords.each do |p|
     %tr
-      %td= p.created_at.strftime("%I:%M %p %B %d, %Y %Z")
+      %td= p.created_at.strftime("%B %d, %Y %I:%M %p %Z")
       %td= p.expired ? "Yes" : "No"
       %td= link_to "#{p.views.count} of #{p.expire_after_views}", pwadmin_path(p.url_token)
       %td= ((p.created_at - p.expire_after_days.days.ago) / 60 / 60 / 24).to_i
