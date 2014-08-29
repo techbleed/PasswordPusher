@@ -33,7 +33,16 @@
       ]);
   %body
     .content
-      = link_to image_tag("forkme.png", :style => "position: absolute; top: 0; right: 0; border: 0; z-index: 1;", :alt => "Fork me on Github" ), "https://github.com/pglombardo/PasswordPusher"
+      .login_toolbar
+        - if user_signed_in?
+          %a{ :href => root_path } Front
+          \|
+          %a{ :href => dashboard_path } Dashboard
+          \|
+          = link_to destroy_user_session_path, { :method => :delete } do
+            Logout
+        -else
+          = link_to "Sign In/Up", new_user_session_path
 
       %p.notice= notice
       %p.alert=alert 

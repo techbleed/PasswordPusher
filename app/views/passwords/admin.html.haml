@@ -1,0 +1,45 @@
+
+%h1= @password.url_token
+
+%table
+  %tr
+    %th= "Created"
+    %th= "Expired?"
+    %th= "Views"
+    %th= "Remaining Days"
+    %th= "URL ID"
+    %th Actions
+    %tr
+      %td= @password.created_at.strftime("%I:%M %p %B %d, %Y %Z")
+      %td= @password.expired ? "Yes" : "No"
+      %td= "#{@password.views.count} of #{@password.expire_after_views}"
+      %td= ((@password.created_at - @password.expire_after_days.days.ago) / 60 / 60 / 24).to_i
+      %td
+        - if @password.expired
+          = link_to @password.url_token, password_path(@password.url_token)
+        - else
+          = link_to @password.url_token, password_path(@password.url_token), { :confirm => "This will use up a view.  Are you sure?" }
+
+      %td= link_to "Expire Now", root_path
+
+%p &nbsp;
+
+%table
+  %tr
+    %th= "#"
+    %th= "When"
+    %th= "IP"
+    %th= "Successful?"
+    %th= "UA"
+    %th= "Referrer"
+    
+  - @password.views.each_with_index do |v, i|
+    %tr
+      %td= i + 1
+      %td= v.created_at.strftime("%I:%M %p %B %d, %Y %Z")
+      %td= v.ip
+      %td= v.successful ? "Yes" : "No"
+      %td= v.user_agent
+      %td= v.referrer
+
+
