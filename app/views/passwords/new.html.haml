@@ -43,13 +43,3 @@
   %span.note
     Once expired, encrypted passwords are unequivocally deleted from the database.
 
-- if Rails.env == "production" or Rails.env == "development"
-  %p.notes
-    = link_to "About PasswordPusher", page_path('about')
-    %br/
-    Find us on:
-    = succeed "," do
-      = link_to "@Twitter", "https://twitter.com/pglombardo"
-    = link_to "@Github", "https://github.com/pglombardo"
-    &amp;
-    = link_to "@Tumblr", "http://blog.gameface.in/"
