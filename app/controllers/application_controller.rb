@@ -6,11 +6,15 @@ class ApplicationController < ActionController::Base
   end
   
   # unless Rails.application.config.consider_all_requests_local
-    rescue_from Exception, with: lambda { |exception| render_error 500, exception }
-    rescue_from ActionController::RoutingError, ActionController::UnknownController, 
-          ::AbstractController::ActionNotFound, ActiveRecord::RecordNotFound, 
-          with: lambda { |exception| render_error 404, exception }
+  #  rescue_from Exception, with: lambda { |exception| render_error 500, exception }
+  #  rescue_from ActionController::RoutingError, ActionController::UnknownController, 
+  #        ::AbstractController::ActionNotFound, ActiveRecord::RecordNotFound, 
+  #        with: lambda { |exception| render_error 404, exception }
   # end
+  
+  def after_sign_in_path_for(user)
+    dashboard_path
+  end
 
   private
   def render_error(status, exception)
