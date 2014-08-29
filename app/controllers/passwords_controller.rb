@@ -1,4 +1,6 @@
 class PasswordsController < ApplicationController
+  before_filter :authenticate_user!, :only => [:admin]
+
   # GET /passwords/1
   # GET /passwords/1.json
   def show
@@ -35,7 +37,7 @@ class PasswordsController < ApplicationController
   def new
     @password = Password.new
 
-    expires_in 3.hours, :public => true, 'max-stale' => 0
+    expires_in 3.hours, :public => true, 'max-stale' => 0 unless user_signed_in?
 
     respond_to do |format|
       format.html # new.html.erb
@@ -104,6 +106,25 @@ class PasswordsController < ApplicationController
     end
   end
 
+  def admin
+    if params.has_key?(:url_token)
+      @password = Password.find_by_url_token!(params[:url_token])   
+      @password.views = View.where(:password_id => @password.id, :successful => true)
+    else
+      redirect_to :root
+      return
+    end
+
+    # This password may have expired since the last view.  Validate the password
+    # expiration before doing anything.
+    @password.validate!
+
+    respond_to do |format|
+      format.html # admin.html.erb
+      format.json { render :json => @password.views }
+    end
+  end
+
   private
 
   ##
@@ -112,15 +133,22 @@ class PasswordsController < ApplicationController
   # Record that a view is being made for a password
   # 
   def log_view(password)
-    view = View.new
-    view.password_id = password.id
-    view.ip          = request.env["HTTP_X_FORWARDED_FOR"].nil? ? request.env["REMOTE_ADDR"] : request.env["HTTP_X_FORWARDED_FOR"]
-    view.user_agent  = request.env["HTTP_USER_AGENT"]
-    view.referrer    = request.env["HTTP_REFERER"]
-    view.successful  = password.expired ? false : true
-    view.save
-    
-    password.views << view
-    password
+    begin
+      view = View.new
+      view.password_id = password.id
+      view.ip          = (request.env["HTTP_X_FORWARDED_FOR"].nil? ? request.env["REMOTE_ADDR"] : request.env["HTTP_X_FORWARDED_FOR"]).force_encoding("UTF-8")
+      view.user_agent  = request.env["HTTP_USER_AGENT"].force_encoding("UTF-8")
+      view.referrer    = request.env["HTTP_REFERER"].force_encoding("UTF-8")
+      view.successful  = password.expired ? false : true
+      
+      if view.save
+        password.views << view
+        password
+      else
+        raise "could not log view"
+      end
+    rescue
+      raise e.message
+    end
   end
 end
